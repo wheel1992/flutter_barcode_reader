@@ -1,14 +1,5 @@
 package com.apptreesoftware.barcodescan
 
-import android.app.Activity
-import android.content.Intent
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.PluginRegistry
-import io.flutter.plugin.common.PluginRegistry.Registrar
-
 class BarcodeScanPlugin(val activity: Activity): MethodCallHandler,
     PluginRegistry.ActivityResultListener {
   var result : Result? = null
@@ -25,14 +16,16 @@ class BarcodeScanPlugin(val activity: Activity): MethodCallHandler,
   override fun onMethodCall(call: MethodCall, result: Result): Unit {
     if (call.method.equals("scan")) {
       this.result = result
-      showBarcodeView()
+      val cameraId = call.arguments["cameraId"]
+      showBarcodeView(cameraId)
     } else {
       result.notImplemented()
     }
   }
 
-  private fun showBarcodeView() {
+  private fun showBarcodeView(cameraId: Int) {
     val intent = Intent(activity, BarcodeScannerActivity::class.java)
+    intent.putExtra("cameraId", cameraId)
     activity.startActivityForResult(intent, 100)
   }
 
